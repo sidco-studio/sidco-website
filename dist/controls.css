@@ -61,17 +61,18 @@
   padding: 0 12px;
   gap: 0;
   min-height: 58px;
-  color: #edffdc;
+  color: #f6ffeb;
   transition: color .25s ease;
 }
 .button.button-lime::before {
-  inset: -16px -25px;
-  background: radial-gradient(ellipse, #c7ff472b, #b5ef3f12 43%, transparent 72%);
-  filter: blur(13px);
+  inset: -25px -38px;
+  background: radial-gradient(ellipse, #c7ff4766 0%, #c7ff4742 40%, #c7ff4720 58%, transparent 80%);
+  filter: blur(15px);
+  opacity: .9;
 }
 .button.button-lime::after {
   inset: 0 -8px;
-  background: radial-gradient(ellipse at 48% 50%, #c7ff4747 0%, #b6f4462e 32%, #c7ff470c 59%, transparent 76%);
+  background: radial-gradient(ellipse at 48% 50%, #c7ff4720 0%, #b6f44620 38%, #c7ff470c 62%, transparent 80%);
   filter: blur(7px);
   opacity: .85;
 }
@@ -82,7 +83,7 @@
   font-weight: 550;
   line-height: 1.35;
   letter-spacing: .05px;
-  text-shadow: 0 0 18px #d5ff9c26;
+  text-shadow: 0 1px 8px #07110070, 0 0 22px #d5ff9c40;
 }
 .button .button-cap {
   display: grid;
@@ -119,28 +120,28 @@
   transition: color .25s ease;
 }
 .header-contact::before {
-  inset: -10px -15px;
-  background: radial-gradient(ellipse, #c7ff4724, #c7ff470a 47%, transparent 74%);
-  filter: blur(9px);
+  inset: -14px -23px;
+  background: radial-gradient(ellipse, #c7ff474d, #c7ff4723 43%, transparent 77%);
+  filter: blur(10px);
 }
 .header-contact::after {
   inset: 4px -5px;
-  background: radial-gradient(ellipse, #c7ff4729, transparent 72%);
+  background: radial-gradient(ellipse, #c7ff4726, transparent 76%);
   filter: blur(5px);
-  opacity: .65;
+  opacity: .85;
 }
 .header-contact:hover { color: var(--lime); background: transparent; transform: none; filter: none; }
 .header-contact:hover::after { opacity: 1; transform: scale(1.12); }
 
 .contact-arrow { width: 110px; height: 110px; color: var(--lime); transition: color .25s ease; }
 .contact-arrow::before {
-  inset: -28px;
-  background: radial-gradient(ellipse, #c7ff4730, #c7ff4712 43%, transparent 71%);
-  filter: blur(14px);
+  inset: -36px;
+  background: radial-gradient(ellipse, #c7ff4752, #c7ff472b 42%, transparent 76%);
+  filter: blur(16px);
 }
 .contact-arrow::after {
   inset: -3px;
-  background: radial-gradient(ellipse, #c7ff473b, #c7ff4716 41%, transparent 74%);
+  background: radial-gradient(ellipse, #c7ff4740, #c7ff4723 44%, transparent 77%);
   filter: blur(7px);
 }
 .contact-arrow .icon-chevron { width: 45%; height: 45%; filter: drop-shadow(0 0 12px #c7ff4745); transition: transform .3s ease; }
@@ -164,16 +165,16 @@
   inset: 7px -18px;
   z-index: -1;
   pointer-events: none;
-  background: radial-gradient(ellipse, #c7ff471b, transparent 73%);
-  filter: blur(8px);
-  opacity: .65;
+  background: radial-gradient(ellipse, #c7ff4738, #c7ff4715 45%, transparent 78%);
+  filter: blur(9px);
+  opacity: .85;
   transition: opacity .3s ease;
 }
 .text-link::after { display: none; }
 .text-link:hover { color: var(--lime); text-shadow: 0 0 15px #c7ff4738; }
 .text-link:hover::before { opacity: 1; }
 .copy-email { width: 44px; height: 44px; color: #bed8a0; transition: color .2s ease; }
-.copy-email::before { inset: -9px; background: radial-gradient(ellipse, #c7ff4723, transparent 72%); filter: blur(5px); opacity: .6; }
+.copy-email::before { inset: -9px; background: radial-gradient(ellipse, #c7ff474d, #c7ff471b 45%, transparent 78%); filter: blur(6px); opacity: .85; }
 .copy-email::after { display: none; }
 .copy-email:hover,
 .copy-email:active { color: var(--lime); transform: none; background: transparent; }
@@ -186,7 +187,7 @@
   position: absolute;
   inset: 8px -18px;
   z-index: -1;
-  background: radial-gradient(ellipse at 28% 50%, #baff4010, transparent 72%);
+  background: radial-gradient(ellipse at 28% 50%, #baff4029, #baff400d 42%, transparent 77%);
   filter: blur(8px);
   opacity: 0;
   transition: opacity .3s ease;
