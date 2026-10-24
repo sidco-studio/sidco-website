@@ -12,8 +12,6 @@
 .example-kicker { color: #9eae91; font-size: 10px; line-height: 1.5; }
 .example-heading { max-width: 440px; margin: 17px 0 23px; font-size: clamp(22px, 2.1vw, 30px); line-height: 1.2; font-weight: 500; letter-spacing: -.9px; }
 .example-heading em { font-weight: 450; }
-.tool-badge { width: 99px; height: 34px; display: flex; align-items: center; justify-content: center; border: 1px solid #435331; border-radius: 4px; background: #c7ff4706; }
-.tool-badge .odoo-logo { width: 104px; height: 56px; max-width: none; }
 .example-status { display: inline-flex; align-items: center; gap: 6px; color: #c9d9ba; font-size: 9px; white-space: nowrap; }
 .example-status i { display: block; width: 8px; height: 10px; flex-shrink: 0; background: var(--lime); clip-path: polygon(90% 50%,25% 90%,45% 50%,25% 10%); }
 .order-summary { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 17px 0; border-top: 1px solid #8ea57330; }
@@ -31,6 +29,9 @@
 .document-row>.icon-chevron { width: 13px; height: 13px; margin-left: auto; color: var(--lime); }
 .example-footnote { display: flex; align-items: center; gap: 7px; color: #99ac89; font-size: 9px; margin-top: 22px; }
 .example-footnote .status-dot { width: 7px; height: 9px; }
+.portal-connection { border-top: 1px solid #8ea57330; padding-top: 16px; }
+.connection-logo { display: flex; align-items: center; justify-content: center; width: 78px; height: 24px; }
+.connection-logo img { width: 104px; height: 56px; max-width: none; flex-shrink: 0; }
 .integration-node { display: flex; align-items: center; gap: 12px; padding: 11px 14px; min-height: 60px; border: 1px solid #3d4c32; border-radius: 4px; background: #1c2818; }
 .tool-icon { display: flex; align-items: center; justify-content: center; width: 48px; height: 32px; flex-shrink: 0; }
 .tool-icon>img { width: 30px; height: 30px; }
@@ -97,8 +98,6 @@
   .example-topline { gap: 7px; }
   .example-status { font-size: 9px; gap: 4px; }
   .example-kicker { font-size: 9px; }
-  .tool-badge { width: 82px; }
-  .tool-badge .odoo-logo { width: 100px; height: 54px; }
   .order-summary { gap: 8px; }
   .order-summary strong { font-size: 12px; }
   .document-row { padding: 13px 10px; gap: 10px; }
