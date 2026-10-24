@@ -35,7 +35,7 @@
   const base = document.createElement('canvas');
   const baseCtx = base.getContext('2d');
   let width=1, height=1, dpr=1, step=10, fieldSize=480, left=0, top=0;
-  let points=[], pulses=[], visible=true, raf=0, last=0, time=0;
+  let points=[], glyphPoints=[], pulses=[], visible=true, raf=0, last=0, time=0;
   const pointer={active:false,x:-1000,y:-1000,easedX:-1000,easedY:-1000};
 
   function inside(x,y,polygon) {
@@ -110,6 +110,7 @@
         color:fieldColor(nx,ny),
         variation:((col*19+row*31)%17)/17});
     }
+    glyphPoints=points.filter(p=>p.facet>=0);
     drawBase();last=0;requestDraw();
   }
   function pulse(x,y){
@@ -130,20 +131,23 @@
   }
   function draw(now){
     raf=0;if(!visible||document.hidden)return;
-    if(last&&now-last<30){raf=requestAnimationFrame(draw);return;}
     const dt=last?Math.min((now-last)/1000,0.06):0;last=now;
     if(!reduced.matches)time+=dt;
     if(reduced.matches){pointer.easedX=pointer.x;pointer.easedY=pointer.y;}
     else{
-      pointer.easedX+=(pointer.x-pointer.easedX)*0.22;
-      pointer.easedY+=(pointer.y-pointer.easedY)*0.22;
+      // Exponential following keeps the same feel at 60, 90 and 120 Hz.
+      const follow=1-Math.exp(-dt*9);
+      pointer.easedX+=(pointer.x-pointer.easedX)*follow;
+      pointer.easedY+=(pointer.y-pointer.easedY)*follow;
     }
     pulses=pulses.filter(p=>now-p.start<1900);
     ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,width,height);
     ctx.globalAlpha=1;ctx.drawImage(base,0,0,width,height);
     const radius=step*7.3;
     const scan=(time*0.13)%1.8-0.4;
-    for(const p of points){
+    // The static grid is cached; only interaction needs the surrounding points.
+    const activePoints=pointer.active||pulses.length?points:glyphPoints;
+    for(const p of activePoints){
       const dx=p.x-pointer.easedX,dy=p.y-pointer.easedY;
       const distance=Math.max(Math.abs(dx),Math.abs(dy));
       const influence=pointer.active?Math.pow(Math.max(0,1-distance/radius),1.7):0;
@@ -159,7 +163,7 @@
       const scanLight=reduced.matches?0:Math.max(0,1-Math.abs(p.nx+p.ny*0.22-scan)/0.12);
       const glyph=p.facet>=0;
       if(!glyph&&influence<0.015&&wave<0.015&&scanLight<0.8)continue;
-      const dist=Math.max(1,Math.hypot(dx,dy));
+      const dist=influence>0?Math.max(1,Math.hypot(dx,dy)):1;
       const displacement=reduced.matches?0:influence*influence*step*1.7;
       const x=p.x+dx/dist*displacement,y=p.y+dy/dist*displacement;
       const brightness=glyph?0.77+p.variation*0.15+scanLight*0.23:0;

@@ -25,30 +25,78 @@ desktopMedia.addEventListener('change', event => { if (event.matches) closeMenu(
 const tabs = [...document.querySelectorAll('.service-tab')];
 const panels = [...document.querySelectorAll('.service-panel')];
 const panelContainer = document.querySelector('.service-panels');
+const tabList = document.querySelector('.service-tabs');
+function setTabOrientation() {
+  tabList.setAttribute('aria-orientation', desktopMedia.matches ? 'vertical' : 'horizontal');
+}
+desktopMedia.addEventListener('change', setTabOrientation);
+setTabOrientation();
+const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+let selectedIndex = tabs.findIndex(tab => tab.getAttribute('aria-selected') === 'true');
+let selectionVersion = 0;
+let panelAnimations = [];
 let measureFrame;
 function measurePanels() {
   cancelAnimationFrame(measureFrame);
   measureFrame = requestAnimationFrame(() => {
-    let tallest = 0;
+    let windowHeight = 0;
+    let captionHeight = 0;
+    panelContainer.classList.add('is-measuring');
     for (const panel of panels) {
       const wasHidden = panel.hidden;
       panel.hidden = false;
-      panel.style.position = 'absolute';
-      panel.style.visibility = 'hidden';
-      tallest = Math.max(tallest, panel.getBoundingClientRect().height);
-      panel.style.position = '';
-      panel.style.visibility = '';
+      windowHeight = Math.max(windowHeight, panel.querySelector('.product-window').getBoundingClientRect().height);
+      captionHeight = Math.max(captionHeight, panel.querySelector('.panel-caption').getBoundingClientRect().height);
       panel.hidden = wasHidden;
     }
-    panelContainer.style.height = `${Math.ceil(tallest)}px`;
+    windowHeight = Math.ceil(windowHeight);
+    captionHeight = Math.ceil(captionHeight);
+    panelContainer.style.setProperty('--example-window-height', `${windowHeight}px`);
+    panelContainer.style.setProperty('--example-caption-height', `${captionHeight}px`);
+    panelContainer.classList.remove('is-measuring');
+    panelContainer.style.height = `${windowHeight + captionHeight}px`;
   });
 }
 function selectTab(index, focus = false) {
+  if (index === selectedIndex) {
+    if (focus) tabs[index].focus();
+    return;
+  }
+  const previousPanel = panels[selectedIndex];
+  const version = ++selectionVersion;
+  panelAnimations.forEach(animation => animation.cancel());
+  panelAnimations = [];
+  selectedIndex = index;
   tabs.forEach((tab, i) => {
     tab.setAttribute('aria-selected', String(i === index));
     tab.tabIndex = i === index ? 0 : -1;
     panels[i].hidden = i !== index;
+    panels[i].classList.remove('is-leaving');
+    panels[i].removeAttribute('aria-hidden');
+    panels[i].inert = false;
   });
+  if (!reducedMotion.matches) {
+    previousPanel.hidden = false;
+    previousPanel.classList.add('is-leaving');
+    previousPanel.setAttribute('aria-hidden', 'true');
+    previousPanel.inert = true;
+    const outgoing = previousPanel.animate([{ opacity: 1 }, { opacity: 0 }], {
+      duration: 160, easing: 'ease-out', fill: 'forwards'
+    });
+    const incoming = panels[index].animate([
+      { opacity: 0, transform: 'translateY(6px)' },
+      { opacity: 1, transform: 'translateY(0)' }
+    ], { duration: 380, easing: 'cubic-bezier(.22, 1, .36, 1)' });
+    panelAnimations = [outgoing, incoming];
+    outgoing.finished.then(() => {
+      if (version !== selectionVersion) return;
+      previousPanel.hidden = true;
+      previousPanel.classList.remove('is-leaving');
+      previousPanel.removeAttribute('aria-hidden');
+      previousPanel.inert = false;
+      outgoing.cancel();
+    }).catch(() => {});
+  }
   if (focus) tabs[index].focus();
 }
 tabs.forEach((tab, index) => {
@@ -68,6 +116,7 @@ new ResizeObserver(entries => {
   if (Math.abs(lastWidth - width) > .5) { lastWidth = width; measurePanels(); }
 }).observe(panelContainer);
 document.fonts.ready.then(measurePanels);
+panelContainer.querySelectorAll('img').forEach(image => image.addEventListener('load', measurePanels, { once: true }));
 measurePanels();
 
 const copyButton = document.querySelector('.copy-email');

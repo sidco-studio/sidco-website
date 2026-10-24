@@ -15,8 +15,10 @@
   <link rel="preload" href="/assets/dm-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/styles.css">
   <link rel="stylesheet" href="/controls.css">
+  <link rel="stylesheet" href="/examples.css">
   <script type="module" src="/app.js"></script>
   <script type="module" src="/core.js"></script>
+  <script type="module" src="/ambient.js"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Naar de inhoud</a>
@@ -63,16 +65,48 @@
         </div>
         <div class="service-panels">
           <div class="service-panel" role="tabpanel" id="panel-software" aria-labelledby="tab-software" tabindex="0">
-            <div class="product-window portal-window"><div class="window-top"><span><i></i><i></i><i></i></span><span>JOUW KLANTENPORTAAL</span><svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="2" fill="none" stroke="currentColor"/><path d="M5 7V5a3 3 0 0 1 6 0v2" fill="none" stroke="currentColor"/></svg></div><div class="portal-body"><div class="portal-topline"><span class="mini-brand">jouw<span>bedrijf</span></span><span class="avatar-small">JD</span></div><p class="portal-greeting">Alles op één plek</p><div class="portal-overview"><div><span>Projectstatus</span><strong>In beweging <i></i></strong></div><div><span>Volgende stap</span><strong>Feedback ontwerp</strong></div></div><div class="progress-label"><span>Van idee naar lancering</span><span class="lime-text">In ontwikkeling</span></div><div class="progress-track"><span></span></div><div class="portal-file"><span class="file-icon" aria-hidden="true"><svg viewBox="0 0 20 24"><path d="M4 2h8l5 5v15H4zM12 2v6h5M7 13h7M7 17h5" fill="none" stroke="currentColor" stroke-width="1.2"/></svg></span><span>Je nieuwste ontwerp staat klaar<small>Bekijk, bespreek en geef feedback</small></span></div><div class="portal-footer"><span><i></i> Eén gedeeld overzicht</span><span>+ Nieuw bericht</span></div></div></div>
-            <div class="panel-caption"><p>Van klantenportaal tot interne applicatie. Heldere software die aansluit op hoe jouw bedrijf werkt.</p><span>Mogelijke toepassing / 01</span></div>
+            <div class="product-window portal-window">
+              <div class="window-top"><span aria-hidden="true"><i></i><i></i><i></i></span><span>JOUW KLANTENPORTAAL</span><svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="2" fill="none" stroke="currentColor"/><path d="M5 7V5a3 3 0 0 1 6 0v2" fill="none" stroke="currentColor"/></svg></div>
+              <div class="example-body">
+                <div class="example-topline"><span class="example-kicker">Jouw omgeving, op maat</span><span class="tool-badge"><img class="odoo-logo" src="/assets/tools/odoo.svg" alt="Odoo" width="92" height="50"></span></div>
+                <p class="example-heading">Je klanten weten <em>waar ze staan</em></p>
+                <div class="order-summary"><div><span>Bestelling</span><strong>Productie op maat</strong></div><span class="example-status"><i aria-hidden="true"></i>In productie</span></div>
+                <div class="order-steps" aria-label="Bestelling bevestigd, productie bezig, levering volgt"><span class="is-done">Bevestigd</span><span class="is-current">Productie</span><span>Levering</span></div>
+                <div class="document-row"><svg viewBox="0 0 20 24" aria-hidden="true"><path d="M4 2h8l5 5v15H4zM12 2v6h5M7 13h7M7 17h5"/></svg><span>Offerte &amp; documenten<small>Alles bij de juiste bestelling</small></span><svg class="icon-chevron" viewBox="0 0 20 20" aria-hidden="true"><path d="M18 10 5 18 9 10 5 2Z"/></svg></div>
+                <div class="example-footnote"><span class="status-dot" aria-hidden="true"></span> Gegevens uit Odoo, in jouw huisstijl</div>
+              </div>
+            </div>
+            <div class="panel-caption"><p>Een klantenportaal op maat, verbonden met Odoo. Laat klanten bestellingen opvolgen en documenten terugvinden, met de extra functies die jouw bedrijf nodig heeft.</p><span>Mogelijke toepassing</span></div>
           </div>
           <div class="service-panel" role="tabpanel" id="panel-automation" aria-labelledby="tab-automation" tabindex="0" hidden>
-            <div class="product-window workflow-window"><div class="window-top"><span><i></i><i></i><i></i></span><span>VERBONDEN WORKFLOW</span><span>⌘</span></div><div class="workflow-body"><div class="workflow-title"><span class="status-dot"></span> Je tools werken samen</div><div class="flow-node"><span class="node-icon" aria-hidden="true">▤</span><div><strong>Nieuwe aanvraag</strong><small>Via je website of mailbox</small></div><span class="node-check">✓</span></div><div class="flow-connector"><span></span><small>Informatie stroomt door</small></div><div class="flow-node"><span class="node-icon">⌘</span><div><strong>Automatisch verwerkt</strong><small>Gegevens op de juiste plek</small></div><span class="node-check">✓</span></div><div class="flow-connector"><span></span><small>Je team blijft op de hoogte</small></div><div class="flow-node"><span class="node-icon" aria-hidden="true">✓</span><div><strong>Klaar voor de volgende stap</strong><small>Opvolgen vanuit je eigen tools</small></div><span class="node-check">✓</span></div></div></div>
-            <div class="panel-caption"><p>Verbind je bestaande tools en laat terugkerend werk vanzelf doorlopen. Met overzicht over elke stap.</p><span>Mogelijke toepassing / 02</span></div>
+            <div class="product-window workflow-window">
+              <div class="window-top"><span aria-hidden="true"><i></i><i></i><i></i></span><span>VAN DEAL NAAR UITVOERING</span><svg class="icon-chevron" viewBox="0 0 20 20" aria-hidden="true"><path d="M18 10 5 18 9 10 5 2Z"/></svg></div>
+              <div class="example-body">
+                <div class="example-topline"><span class="example-kicker">Je tools werken samen</span><span class="example-status"><i aria-hidden="true"></i>Verbonden</span></div>
+                <p class="example-heading">Van gewonnen deal naar <em>een vlotte start</em></p>
+                <div class="integration-flow">
+                  <div class="integration-node"><span class="tool-icon"><img src="/assets/tools/teamleader.svg" alt="" width="30" height="30"></span><div><strong>Deal gewonnen in Teamleader</strong><small>Klant, offerte en afspraken staan klaar</small></div><span class="node-check" aria-label="Voltooid">✓</span></div>
+                  <div class="integration-connector" aria-hidden="true"><span></span><small>Klantgegevens &amp; offertelijnen</small></div>
+                  <div class="integration-node"><span class="tool-icon tool-icon-odoo"><img src="/assets/tools/odoo.svg" alt="" width="74" height="40"></span><div><strong>Conceptorder in Odoo</strong><small>Je team controleert en plant verder</small></div><span class="node-check" aria-label="Voltooid">✓</span></div>
+                  <div class="integration-connector" aria-hidden="true"><span></span><small>Een update voor je team</small></div>
+                  <div class="integration-node"><span class="tool-icon"><img src="/assets/tools/teams.svg" alt="" width="30" height="30"></span><div><strong>Projectupdate in Teams</strong><small>Iedereen weet wat de volgende stap is</small></div><span class="node-check" aria-label="Voltooid">✓</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="panel-caption"><p>Een deal gewonnen in Teamleader? Een koppeling kan de order in Odoo klaarzetten en je team in Teams informeren. Minder overtypen, meer tijd voor je werk.</p><span>Mogelijke toepassing</span></div>
           </div>
           <div class="service-panel" role="tabpanel" id="panel-ai" aria-labelledby="tab-ai" tabindex="0" hidden>
-            <div class="product-window ai-window"><div class="window-top"><span><i></i><i></i><i></i></span><span>AI IN JE WERKDAG</span><span>✳</span></div><div class="ai-body"><div class="ai-symbol">✳</div><p class="ai-greeting">Van informatie naar inzicht</p><div class="ai-prompt"><span>Vat deze aanvraag samen en stel een antwoord voor</span><span aria-hidden="true">✳</span></div><div class="ai-result"><p><span class="status-dot"></span> Voorstel voorbereid</p><div class="ai-result-line"></div><div class="ai-result-line short"></div><div class="ai-result-line"></div><div class="ai-result-line shorter"></div><div class="ai-review"><span>Jij kijkt na en beslist</span><span>✓</span></div></div></div></div>
-            <div class="panel-caption"><p>Verwerk aanvragen, doorzoek informatie en maak een eerste voorstel. AI helpt vooruit; jij houdt de regie.</p><span>Mogelijke toepassing / 03</span></div>
+            <div class="product-window ai-window">
+              <div class="window-top"><span aria-hidden="true"><i></i><i></i><i></i></span><span>VAN AANVRAAG NAAR VOORSTEL</span><svg class="icon-chevron" viewBox="0 0 20 20" aria-hidden="true"><path d="M18 10 5 18 9 10 5 2Z"/></svg></div>
+              <div class="example-body">
+                <div class="example-topline"><span class="example-kicker">AI met jouw bedrijfskennis</span><span class="example-status"><i aria-hidden="true"></i>Jij beslist</span></div>
+                <p class="example-heading">Van volle inbox naar <em>een eerste voorstel</em></p>
+                <div class="request-source"><img src="/assets/tools/outlook.svg" alt="Outlook" width="28" height="28"><div><strong>Nieuwe aanvraag</strong><small>E-mail + technische fiche.pdf</small></div><span class="source-label">Inkomend</span></div>
+                <div class="ai-brief"><span class="ai-brief-label"><svg class="icon-chevron" viewBox="0 0 20 20" aria-hidden="true"><path d="M18 10 5 18 9 10 5 2Z"/></svg> Voorbereid met je eigen prijsregels</span><p>Vraag en aantallen uitgelezen.<br>Levertermijn nog te bevestigen.</p></div>
+                <div class="draft-destination"><img src="/assets/tools/teamleader.svg" alt="" width="26" height="26"><div><strong>Conceptofferte in Teamleader</strong><small>Jij kijkt na, vult aan en verstuurt</small></div><span class="draft-tag">Ter controle</span></div>
+              </div>
+            </div>
+            <div class="panel-caption"><p>AI haalt de vraag uit Outlook en bijlagen, past je bedrijfsregels toe en bereidt een offerte voor in Teamleader. Je team kijkt na vóór er iets naar de klant gaat.</p><span>Mogelijke toepassing</span></div>
           </div>
         </div>
       </div>
