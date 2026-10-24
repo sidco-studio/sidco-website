@@ -30,3 +30,11 @@
 .status-dot,.hero-location i,.portal-overview i,.portal-footer i,.window-top i,.tab-status{border:0;border-radius:0;clip-path:polygon(90% 50%,25% 90%,45% 50%,25% 10%);background:var(--lime);flex-shrink:0}.status-dot{width:9px;height:11px;box-shadow:0 0 12px #c7ff4740}.hero-location i{width:8px;height:10px}.portal-overview i{width:7px;height:9px}.portal-footer i{width:6px;height:8px;background:#a6c88a}.window-top i{width:5px;height:7px;background:#849074}.tab-status{width:14px;height:14px;margin-top:7px;background:#65725f;transition:background .2s}.service-tab[aria-selected=true] .tab-status{background:var(--lime);box-shadow:none}.ai-result .status-dot{width:7px;height:9px}.about-principles .icon-chevron{width:11px;height:13px;color:var(--lime)}
 
 .wordmark-i{position:relative;display:inline-block}.logo-tittle{position:absolute;top:.075em;left:50%;width:.23em;height:.2em;transform:translateX(-42%);fill:var(--lime);pointer-events:none}
+
+/* Slim native scrollbars with a transparent track and the SIDCO neon accent. */
+html{scrollbar-width:thin;scrollbar-color:var(--lime) transparent}
+::-webkit-scrollbar{width:6px;height:6px;background:transparent}
+::-webkit-scrollbar-track,::-webkit-scrollbar-corner{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--lime);border:0;border-radius:999px;min-height:32px}
+::-webkit-scrollbar-thumb:hover{background:#ddff94}
+@supports selector(::-webkit-scrollbar){html{scrollbar-width:auto;scrollbar-color:auto}}
