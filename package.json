@@ -1,0 +1,12 @@
+{
+  "name": "sidco-future",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "SIDCO — software voor wat morgen kan",
+  "scripts": {
+    "dev": "node scripts/serve.mjs",
+    "start": "node scripts/serve.mjs",
+    "check": "node --check dist/app.js && node --check dist/core.js && node --check scripts/serve.mjs"
+  }
+}
