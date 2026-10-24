@@ -4,7 +4,7 @@
   if (!canvas) return;
   const ctx = canvas.getContext('2d', { alpha: true });
   if (!ctx) {
-    const fallback = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" fill="#c7ff47"><path d="M20 1 28 13 20 10 12 13ZM39 20 27 28 30 20 27 12ZM20 39 12 27 20 30 28 27ZM1 20 13 12 10 20 13 28Z"/></svg>';
+    const fallback = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40"><defs><linearGradient id="a" x1="0" y1="0" x2=".3" y2="1"><stop stop-color="#e5ffac"/><stop offset=".35" stop-color="#c7ff47"/><stop offset=".7" stop-color="#b8f742"/><stop offset="1" stop-color="#88d74b"/></linearGradient></defs><path fill="url(#a)" d="M20 1 28 13 20 10 12 13ZM39 20 27 28 30 20 27 12ZM20 39 12 27 20 30 28 27ZM1 20 13 12 10 20 13 28Z"/></svg>';
     canvas.style.backgroundImage = `url("data:image/svg+xml,${encodeURIComponent(fallback)}")`;
     canvas.style.backgroundSize = '72% 72%';
     canvas.style.backgroundPosition = 'center';
@@ -21,7 +21,17 @@
     [[1,20],[13,12],[10,20],[13,28]],
   ];
   const lime = '#c7ff47';
-  const cyan = '#79e5d1';
+  const paleLime = '#e5ffac';
+    const colorStops = [[0,[229,255,172]],[0.35,[199,255,71]],[0.67,[184,247,66]],[0.84,[155,227,66]],[1,[136,215,75]]];
+  function fieldColor(nx,ny){
+    const value=Math.max(0,Math.min(1,nx*0.25+ny*0.75));
+    let a=colorStops[0],b=colorStops[1];
+    for(let i=1;i<colorStops.length;i++){
+      b=colorStops[i];if(value<=b[0])break;a=b;
+    }
+    const t=(value-a[0])/(b[0]-a[0]||1);
+    return `rgb(${a[1].map((channel,i)=>Math.round(channel+(b[1][i]-channel)*t)).join(',')})`;
+  }
   const base = document.createElement('canvas');
   const baseCtx = base.getContext('2d');
   let width=1, height=1, dpr=1, step=10, fieldSize=480, left=0, top=0;
@@ -43,6 +53,22 @@
     base.width=Math.round(width*dpr);base.height=Math.round(height*dpr);
     baseCtx.setTransform(dpr,0,0,dpr,0,0);
     baseCtx.clearRect(0,0,width,height);
+    // The diffuse silhouette is cached once per resize, never blurred per pixel.
+    const bloom=baseCtx.createLinearGradient(left,top,left+fieldSize*0.3,top+fieldSize);
+    bloom.addColorStop(0,paleLime);bloom.addColorStop(0.35,lime);
+    bloom.addColorStop(0.67,'#b8f742');bloom.addColorStop(1,'#88d74b');
+    baseCtx.save();
+    baseCtx.filter=`blur(${Math.max(8,fieldSize*0.035)}px)`;
+    baseCtx.globalAlpha=0.25;baseCtx.fillStyle=bloom;
+    for(const facet of facets){
+      baseCtx.beginPath();
+      facet.forEach(([fx,fy],i)=>{
+        const x=left+fx/40*fieldSize,y=top+fy/40*fieldSize;
+        if(i===0)baseCtx.moveTo(x,y);else baseCtx.lineTo(x,y);
+      });
+      baseCtx.closePath();baseCtx.fill();
+    }
+    baseCtx.restore();
     baseCtx.lineWidth=0.7;
     baseCtx.strokeStyle='#c7ff471a';
     baseCtx.beginPath();
@@ -81,6 +107,7 @@
       const facet=facets.findIndex(shape=>inside(nx*40,ny*40,shape));
       points.push({x:left+col*step,y:top+row*step,nx,ny,col,row,facet,
         accent:facet===1&&(col+row)%13===0,
+        color:fieldColor(nx,ny),
         variation:((col*19+row*31)%17)/17});
     }
     drawBase();last=0;requestDraw();
@@ -90,17 +117,15 @@
     if(pulses.length>5)pulses.shift();
     requestDraw();
   }
-  function line(x,y,length,angle,alpha,color=lime,arrow=false){
+  function chevron(x,y,length,angle,alpha,color=lime){
     ctx.globalAlpha=Math.max(0,Math.min(1,alpha));ctx.strokeStyle=color;
     ctx.lineWidth=Math.max(1,step*0.15);
-    const dx=Math.cos(angle),dy=Math.sin(angle),half=length/2;
-    ctx.beginPath();ctx.moveTo(x-dx*half,y-dy*half);ctx.lineTo(x+dx*half,y+dy*half);
-    if(arrow){
-      const head=length*0.34;
-      ctx.moveTo(x+dx*half-dx*head-dy*head,y+dy*half-dy*head+dx*head);
-      ctx.lineTo(x+dx*half,y+dy*half);
-      ctx.lineTo(x+dx*half-dx*head+dy*head,y+dy*half-dy*head-dx*head);
-    }
+    const dx=Math.cos(angle),dy=Math.sin(angle);
+    const tip=length*0.4,back=-length*0.3,wing=length*0.4;
+    ctx.beginPath();
+    ctx.moveTo(x+dx*back-dy*wing,y+dy*back+dx*wing);
+    ctx.lineTo(x+dx*tip,y+dy*tip);
+    ctx.lineTo(x+dx*back+dy*wing,y+dy*back-dx*wing);
     ctx.stroke();
   }
   function draw(now){
@@ -122,12 +147,14 @@
       const dx=p.x-pointer.easedX,dy=p.y-pointer.easedY;
       const distance=Math.max(Math.abs(dx),Math.abs(dy));
       const influence=pointer.active?Math.pow(Math.max(0,1-distance/radius),1.7):0;
-      let wave=0;
+      let wave=0,strongestWave=0,waveAngle=0;
       for(const q of pulses){
         const age=now-q.start;
         const reach=age*fieldSize/1450;
         const dist=Math.max(Math.abs(p.x-q.x),Math.abs(p.y-q.y));
-        wave+=Math.max(0,1-Math.abs(dist-reach)/(step*2.1))*Math.max(0,1-age/1900);
+        const strength=Math.max(0,1-Math.abs(dist-reach)/(step*2.1))*Math.max(0,1-age/1900);
+        wave+=strength;
+        if(strength>strongestWave){strongestWave=strength;waveAngle=Math.atan2(p.y-q.y,p.x-q.x);}
       }
       const scanLight=reduced.matches?0:Math.max(0,1-Math.abs(p.nx+p.ny*0.22-scan)/0.12);
       const glyph=p.facet>=0;
@@ -135,13 +162,14 @@
       const dist=Math.max(1,Math.hypot(dx,dy));
       const displacement=reduced.matches?0:influence*influence*step*1.7;
       const x=p.x+dx/dist*displacement,y=p.y+dy/dist*displacement;
-      const brightness=glyph?0.60+p.variation*0.23+scanLight*0.3:0;
+      const brightness=glyph?0.77+p.variation*0.15+scanLight*0.23:0;
       const alpha=Math.min(1,brightness+influence*0.9+wave*1.05+(!glyph?scanLight*0.065:0));
-      const color=p.accent&&influence<0.2?cyan:lime;
-      if(influence>0.18){
-        // Every nearby pixel becomes a tiny, outward-pointing control surface.
+      const color=influence>0.38?lime:(p.accent?paleLime:p.color);
+      const sparseChevron=(p.col+p.row*3)%4===0;
+      if(influence>0.18&&sparseChevron){
+        // Sparse open facets follow the pointer; most pixels retain their shape.
         const direction=Math.round(Math.atan2(dy,dx)/(Math.PI/4))*(Math.PI/4);
-        line(x,y,step*(0.57+influence*0.34),direction,alpha,color,true);
+        chevron(x,y,step*(0.57+influence*0.34),direction,alpha,color);
       }else if(glyph){
         ctx.globalAlpha=alpha;ctx.fillStyle=color;
         const horizontal=p.facet===0||p.facet===2;
@@ -153,8 +181,14 @@
           ctx.fillRect(x-long*.68,y-long*.68,long*1.36,long*1.36);
         }
       }else if(wave>0.04||influence>0.015){
-        const angle=p.nx<0.5?Math.PI:0;
-        line(x,y,step*0.5,angle,alpha*0.7,color,wave>0.3);
+        if(wave>0.3&&sparseChevron){
+          const direction=Math.round(waveAngle/(Math.PI/4))*(Math.PI/4);
+          chevron(x,y,step*0.5,direction,alpha*0.7,color);
+        }else{
+          const size=step*(0.22+influence*0.18+wave*0.1);
+          ctx.globalAlpha=alpha*0.7;ctx.fillStyle=color;
+          ctx.fillRect(x-size/2,y-size/2,size,size);
+        }
       }
     }
     // A tap sends a square wave through the grid. The shape stays resolutely flat.
