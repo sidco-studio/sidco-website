@@ -22,7 +22,7 @@ npm run check
 
 - `dist/index.html`: complete Dutch Belgian site, including expertise, approach, founder and email contact.
 - `dist/styles.css`: responsive layouts, local typography, focus styles and reduced-motion support.
-- `dist/app.js`: mobile navigation, keyboard-accessible service tabs with measured stable panel height, and email copying.
+- `dist/app.js`: mobile navigation, keyboard-accessible service tabs with measured stable panel height, and email copying. The expertise strip loops seamlessly with the abstract brand symbol, pauses on hover or keyboard focus, and stays static for reduced-motion preferences.
 - `dist/core.js`: original dependency-free Canvas 2D signal field, with an abstract expanding symbol, pointer interaction with sparse shaftless chevrons, touch and keyboard light pulses, resize support, visibility pause and reduced-motion support.
 - `dist/assets/`: locally served DM Sans (SIL Open Font License included) and Gilles Kindt’s portrait, reused from the existing SIDCO material and originally sourced from the official Tectonic team page.
 - `dist/favicon.svg`: original abstract SIDCO expansion symbol.
