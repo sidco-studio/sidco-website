@@ -21,6 +21,17 @@
     [[20,39],[12,27],[20,30],[28,27]],
     [[1,20],[13,12],[10,20],[13,28]],
   ];
+  const facetDirections=[[0,-1],[1,0],[0,1],[-1,0]];
+  const facetGeometry=facets.map(polygon=>{
+    let perimeter=0;
+    const edges=polygon.map((a,i)=>{
+      const b=polygon[(i+1)%polygon.length];
+      const length=Math.hypot(b[0]-a[0],b[1]-a[1]);
+      const edge={a,b,start:perimeter,length};
+      perimeter+=length;return edge;
+    });
+    return {polygon,edges,perimeter};
+  });
   const lime = '#c7ff47';
   const paleLime = '#e5ffac';
     const colorStops = [[0,[229,255,172]],[0.35,[199,255,71]],[0.67,[184,247,66]],[0.84,[155,227,66]],[1,[136,215,75]]];
@@ -51,10 +62,99 @@
   function requestDraw(){
     if(!raf&&visible&&!document.hidden)raf=requestAnimationFrame(draw);
   }
+  function facetPath(context,polygon,cx,cy,size){
+    context.beginPath();
+    polygon.forEach(([fx,fy],i)=>{
+      const x=cx+(fx-20)*size/40,y=cy+(fy-20)*size/40;
+      if(i===0)context.moveTo(x,y);else context.lineTo(x,y);
+    });
+    context.closePath();
+  }
+  function mobileMarkSize(){return Math.min(width*0.72,height*0.76);}
+  function drawMobileBase(){
+    const size=mobileMarkSize(),cx=width/2,cy=height/2;
+    const glow=baseCtx.createLinearGradient(cx-size/2,cy-size/2,cx+size/2,cy+size/2);
+    glow.addColorStop(0,paleLime);glow.addColorStop(0.5,lime);glow.addColorStop(1,'#88d74b');
+    baseCtx.save();
+    baseCtx.filter=`blur(${Math.max(10,size*0.065)}px)`;
+    baseCtx.fillStyle=glow;baseCtx.globalAlpha=0.14;
+    for(const facet of facets){facetPath(baseCtx,facet,cx,cy,size);baseCtx.fill();}
+    baseCtx.restore();
+  }
+  function traceFacet(geometry,cx,cy,size,phase){
+    const start=((phase%1)+1)%1*geometry.perimeter;
+    const end=start+geometry.perimeter*0.2;
+    ctx.beginPath();
+    for(let lap=0;lap<2;lap++)for(const edge of geometry.edges){
+      const edgeStart=edge.start+lap*geometry.perimeter;
+      const from=Math.max(start,edgeStart),to=Math.min(end,edgeStart+edge.length);
+      if(to<=from)continue;
+      const a=(from-edgeStart)/edge.length,b=(to-edgeStart)/edge.length;
+      ctx.moveTo(cx+(edge.a[0]+(edge.b[0]-edge.a[0])*a-20)*size/40,
+        cy+(edge.a[1]+(edge.b[1]-edge.a[1])*a-20)*size/40);
+      ctx.lineTo(cx+(edge.a[0]+(edge.b[0]-edge.a[0])*b-20)*size/40,
+        cy+(edge.a[1]+(edge.b[1]-edge.a[1])*b-20)*size/40);
+    }
+    ctx.stroke();
+  }
+  function drawMobile(now){
+    const cx=width/2,cy=height/2,size=mobileMarkSize();
+    const still=reduced.matches;
+    const breathing=still?1:1+Math.sin(time*Math.PI*2/6.4)*0.006;
+    let flash=0;
+    for(const pulse of pulses){
+      const age=Math.max(0,now-pulse.start);
+      if(pulse.quiet)flash=Math.max(flash,(1-age/pulse.duration)*0.6);
+      else if(!pulse.auto)flash=Math.max(flash,Math.max(0,1-age/180)*0.42);
+    }
+    ctx.globalAlpha=1;ctx.drawImage(base,0,0,width,height);
+    ctx.lineJoin='miter';ctx.lineCap='butt';
+    // A single fine echo is part of the mark, with no grid or enclosing frame.
+    ctx.strokeStyle=lime;ctx.lineWidth=0.7;ctx.globalAlpha=still?0.07:0.09;
+    for(const facet of facets){facetPath(ctx,facet,cx,cy,size*1.14);ctx.stroke();}
+    for(const pulse of pulses){
+      if(pulse.quiet)continue;
+      const age=Math.max(0,now-pulse.start);
+      for(let i=0;i<facets.length;i++){
+        const direction=facetDirections[i];
+        const fx=cx+direction[0]*size*0.32,fy=cy+direction[1]*size*0.32;
+        const delay=pulse.auto?0:Math.hypot(fx-pulse.x,fy-pulse.y)*0.75;
+        const phase=(age-delay)/1350;
+        if(phase<0||phase>1)continue;
+        const expansion=1+0.25*(1-Math.pow(1-phase,2));
+        ctx.globalAlpha=Math.pow(1-phase,2)*(pulse.auto?0.18:0.44)*pulse.strength;
+        ctx.strokeStyle=pulse.auto?lime:paleLime;ctx.lineWidth=pulse.auto?0.7:1.1;
+        facetPath(ctx,facets[i],cx,cy,size*expansion);ctx.stroke();
+      }
+    }
+    const fill=ctx.createLinearGradient(cx-size*0.45,cy-size*0.45,cx+size*0.5,cy+size*0.5);
+    fill.addColorStop(0,'#dcff98');fill.addColorStop(0.48,lime);fill.addColorStop(1,'#9bdf46');
+    for(let i=0;i<facets.length;i++){
+      const direction=facetDirections[i];
+      const fx=cx+direction[0]*size*0.32,fy=cy+direction[1]*size*0.32;
+      const hover=pointer.active?Math.max(0,1-Math.hypot(pointer.easedX-fx,pointer.easedY-fy)/(size*0.6)):0;
+      const light=still?0.84:0.80+Math.sin(time*0.8+i*1.4)*0.035;
+      facetPath(ctx,facets[i],cx,cy,size*breathing);
+      ctx.fillStyle=fill;ctx.globalAlpha=Math.min(1,light+flash+hover*0.16);ctx.fill();
+      ctx.strokeStyle=paleLime;ctx.lineWidth=0.8;
+      ctx.globalAlpha=Math.min(0.75,0.3+flash+hover*0.3);ctx.stroke();
+      if(!still){
+        ctx.strokeStyle='#efffc8';ctx.lineWidth=1.05;
+        ctx.globalAlpha=0.36+hover*0.26;
+        traceFacet(facetGeometry[i],cx,cy,size*breathing,time*0.085+i*0.23);
+      }
+    }
+    if(flash>0){
+      ctx.fillStyle='#f1ffd5';ctx.globalAlpha=Math.min(0.32,flash*0.65);
+      for(const facet of facets){facetPath(ctx,facet,cx,cy,size*breathing);ctx.fill();}
+    }
+    ctx.globalAlpha=1;
+  }
   function drawBase(){
     base.width=Math.round(width*dpr);base.height=Math.round(height*dpr);
     baseCtx.setTransform(dpr,0,0,dpr,0,0);
     baseCtx.clearRect(0,0,width,height);
+    if(mobile){drawMobileBase();return;}
     // The diffuse silhouette is cached once per resize, never blurred per pixel.
     const bloom=baseCtx.createLinearGradient(left,top,left+fieldSize*0.3,top+fieldSize);
     bloom.addColorStop(0,paleLime);bloom.addColorStop(0.35,lime);
@@ -154,6 +254,11 @@
     }
     pulses=pulses.filter(p=>now-p.start<p.duration);
     ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,width,height);
+    if(mobile){
+      drawMobile(now);
+      if(!reduced.matches||pulses.length)raf=requestAnimationFrame(draw);
+      return;
+    }
     ctx.globalAlpha=1;ctx.drawImage(base,0,0,width,height);
     const radius=step*7.3;
     const scan=(time*0.13)%1.8-0.4;

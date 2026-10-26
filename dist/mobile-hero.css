@@ -1,72 +1,84 @@
-/* The phone hero reads as one composition, with a compact touch-friendly mark. */
-.hero-description-mobile { display: none; }
+/* A single mobile reading axis: promise, explanation, living mark, action. */
+.hero-description-mobile,
+.button.button-lime.hero-mobile-action { display: none; }
 
 @media (max-width: 600px) {
   .hero {
     display: flex;
     flex-direction: column;
+    align-items: center;
     gap: 0;
     min-height: 0;
-    padding: 30px var(--gutter) 22px;
+    padding: 40px 24px 34px;
+    text-align: center;
+    background: radial-gradient(ellipse at 50% 56%, #a6e83a16, transparent 62%), #090c0a;
   }
 
   .hero-content {
     width: 100%;
+    max-width: 430px;
     padding: 0;
   }
 
   .hero .eyebrow {
-    font-size: 9px;
-    letter-spacing: 1.3px;
+    justify-content: center;
+    font-size: .625rem;
+    letter-spacing: .12em;
   }
 
   .hero h1 {
-    max-width: 430px;
-    margin: 20px 0 21px;
-    font-size: clamp(46px, 12.7vw, 64px);
+    max-width: 12ch;
+    margin: 20px auto 22px;
+    font-size: clamp(3rem, .75rem + 10vw, 3.75rem);
     line-height: 1.04;
-    letter-spacing: -.06em;
+    letter-spacing: -.055em;
     text-wrap: balance;
   }
 
   .hero-description {
-    max-width: 360px;
-    margin-bottom: 23px;
-    font-size: 14px;
-    line-height: 1.7;
+    max-width: 32ch;
+    margin: 0 auto;
+    font-size: 1rem;
+    line-height: 1.6;
   }
 
-  .hero-description-full { display: none; }
-  .hero-description-mobile { display: inline; }
-
-  .hero .button .button-label {
-    padding: 10px 12px;
-    font-size: 12px;
-  }
-
+  .hero-description-full,
+  .hero-content > .button,
   .hero-signoff,
   .hero-bottom,
   .hero-art::after { display: none; }
 
+  .hero-description-mobile { display: inline; }
+
   .hero-art {
     align-self: center;
-    width: calc(100% + 24px);
-    height: clamp(220px, 60vw, 260px);
+    flex: none;
+    width: calc(100% + 48px);
+    height: clamp(200px, 54vw, 240px);
     aspect-ratio: auto;
-    margin: 18px -12px 0;
+    margin: 20px -24px 16px;
   }
 
   .hero-art canvas { touch-action: pan-y pinch-zoom; }
 
-  .hero {
-    background: radial-gradient(ellipse at 66% 74%, #99e84113, transparent 62%),
-      radial-gradient(ellipse at 8% 10%, #a2ee4507, transparent 52%);
+  .button.button-lime.hero-mobile-action {
+    display: inline-flex;
+    justify-content: center;
+    width: min(100%, 300px);
+    min-height: 50px;
   }
+
+  .hero-mobile-action .button-label {
+    flex: 1;
+    padding: 12px 14px;
+    font-size: .875rem;
+    line-height: 1.35;
+  }
+
+  .hero-mobile-action .button-cap { min-height: 48px; }
 }
 
 @media (max-height: 740px) and (max-width: 600px) {
-  .hero { padding-top: 24px; padding-bottom: 16px; }
-  .hero h1 { margin-block: 17px 18px; }
-  .hero-description { margin-bottom: 19px; }
-  .hero-art { height: 220px; margin-top: 10px; }
+  .hero { padding-top: 30px; padding-bottom: 28px; }
+  .hero-art { height: 190px; margin-top: 16px; }
 }
