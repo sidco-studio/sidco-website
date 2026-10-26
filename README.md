@@ -1,6 +1,6 @@
 # SIDCO Future
 
-A website for SIDCO, an AI software studio, built around a futuristic neon identity: graphite backgrounds, electric lime with selective neon glow, an original interactive 2D brand visual, and a concise Dutch presentation of custom software, automation and practical AI.
+A website for SIDCO, an AI software studio, built around a futuristic neon identity: graphite backgrounds, electric lime with selective neon glow, an original interactive 2D brand visual, and a concise Dutch presentation led by practical AI, supported by automation and custom software.
 
 Private GitHub repository: https://github.com/gilleskindt/sidco-future
 
@@ -20,9 +20,9 @@ npm run check
 
 ## Structure
 
-- `dist/index.html`: complete Dutch Belgian site, including expertise, approach, founder and email contact.
+- `dist/index.html`: complete Dutch Belgian site with AI-led copy throughout the hero, expertise, approach, founder and email contact. AI is first in visible and accessible capability lists and is the initially selected service example.
 - `dist/styles.css`: responsive layouts, local typography, focus styles and reduced-motion support.
-- `dist/controls.css`: compact pill-shaped controls with stationary, unchanged surfaces on hover and the same fine green-grey borders as the preview windows. Presses immediately brighten the inner rim and lime light, then fade on release without shifting the control. Includes a borderless glowing contact chevron, section chevrons, visible keyboard focus and compact sticky navigation with a dark translucent neon wash.
+- `dist/controls.css`: compact pill-shaped controls with stationary, unchanged surfaces on hover and the same fine green-grey borders as the preview windows. Presses immediately brighten the inner rim and lime light, then fade on release without shifting the control. Includes a borderless glowing contact chevron, section chevrons, visible keyboard focus and compact sticky navigation with a dark translucent neon wash. The header uses a larger, optically aligned brand symbol and independently centered desktop links with slightly larger text.
 - `dist/examples.css`: a company portal and concrete Teamleader, Odoo, Teams and Outlook workflows, with recognizable SVG marks adapted to the lime palette.
 - `dist/expertise.css`: compact desktop composition, with introduction and service choices beside the shared preview, fitting a normal laptop viewport.
 - `dist/mobile-hero.css`: one centered reading axis on desktop and phone, with the branded background behind the headline and action. Phone layouts use a readable 16px explanation and a 50px pill action. The mobile opening groups the hero and capability marquee into the viewport below the measured navbar, with the moving strip at its bottom. Longer content and reduced-motion wrapping can expand naturally. Secondary mobile signoffs are hidden. Only the relevant action is displayed at each breakpoint.
@@ -31,11 +31,11 @@ npm run check
 - `dist/core.js`: the original dependency-free interactive Canvas 2D pixel field, retained for possible reuse. It is no longer loaded or mounted in the page. To restore it, add its module script and a `.hero-art` wrapper containing `canvas#energy-core` with the accessible control label and instruction.
 - `dist/hero-field.js`: a decorative branded light field behind the hero copy. Five continuous angular routes connect the four outward chevrons, with three slow light segments and diffuse lime light. Hero-scoped pointer and touch feedback preserves links, native scrolling and pinch zoom; reduced motion keeps a static atmosphere.
 - `dist/assets/`: locally served DM Sans (SIL Open Font License included) and Gilles Kindt’s portrait, reused from the existing SIDCO material and originally sourced from the official Tectonic team page.
-- `dist/favicon.svg`: original abstract SIDCO expansion symbol.
+- `dist/favicon.svg`: the abstract SIDCO expansion symbol in the navbar's lime palette, on a dark tile with a soft radial glow.
 - `scripts/serve.mjs`: local static preview server.
 - `.openai/hosting.json`: independent private Sites deployment identity.
 
-The service previews show possible applications: a company portal for internal teams and clients, a won Teamleader deal preparing an Odoo order and Teams update, and intake from Outlook and attachments preparing a Teamleader quote with human review. Window and caption heights are measured across all tabs at the responsive width, so switching scenarios keeps both rectangles and the surrounding section stable.
+The service previews show possible applications in AI-first order: intake from Outlook and attachments preparing a Teamleader quote with human review, a won Teamleader deal preparing an Odoo order and Teams update, and a company portal for internal teams and clients. Window and caption heights are measured across all tabs at the responsive width, so switching scenarios keeps both rectangles and the surrounding section stable.
 
 Capability references: [Odoo external API](https://www.odoo.com/documentation/19.0/developer/misc/api/external_api.html), [Teamleader API](https://developer.focus.teamleader.eu/), [Teamleader quotation AI](https://support.focus.teamleader.eu/hc/en-150/articles/51014294144401-Create-and-send-a-quotation-faster-with-Focus-AI). These examples would require project-specific implementation and compatible software access; Odoo external API access requires its Custom plan. The company portal stands on its own; the AI scenario connects external sources and company rules rather than claiming Teamleader lacks native quotation AI.
 

@@ -25,6 +25,7 @@
 .hero-content { width: 100%; max-width: 900px; padding: 0; isolation: isolate; }
 .hero .eyebrow, .hero-signoff, .hero-bottom { justify-content: center; }
 .hero h1 { max-width: 12ch; margin: 26px auto; font-size: clamp(68px, 7.4vw, 112px); line-height: 1.02; letter-spacing: -.065em; text-wrap: balance; }
+.hero h1 em { margin-inline-end: .06em; }
 .hero-description { max-width: 48ch; margin: 0 auto 30px; font-size: 17px; line-height: 1.7; }
 .hero-bottom > span, .hero-grid { display: none; }
 .hero-content::before {
