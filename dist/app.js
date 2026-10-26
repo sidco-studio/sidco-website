@@ -32,6 +32,27 @@ function setTabOrientation() {
 desktopMedia.addEventListener('change', setTabOrientation);
 setTabOrientation();
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+const snapSections = [...document.querySelectorAll('main > section')];
+const stickyHeader = document.querySelector('.site-header');
+let snapFrame;
+function measureSectionSnaps() {
+  cancelAnimationFrame(snapFrame);
+  snapFrame = requestAnimationFrame(() => {
+    const headerHeight = Math.ceil(stickyHeader.getBoundingClientRect().height);
+    document.documentElement.style.setProperty('--sticky-header-height', `${headerHeight}px`);
+    const available = window.innerHeight - headerHeight;
+    snapSections.forEach(section => {
+      section.classList.toggle('is-snap-section', !reducedMotion.matches && section.getBoundingClientRect().height <= available - 2);
+    });
+  });
+}
+const snapObserver = new ResizeObserver(measureSectionSnaps);
+snapSections.forEach(section => snapObserver.observe(section));
+snapObserver.observe(stickyHeader);
+window.addEventListener('resize', measureSectionSnaps, { passive: true });
+reducedMotion.addEventListener('change', measureSectionSnaps);
+document.fonts.ready.then(measureSectionSnaps);
+measureSectionSnaps();
 let selectedIndex = tabs.findIndex(tab => tab.getAttribute('aria-selected') === 'true');
 let selectionVersion = 0;
 let panelAnimations = [];

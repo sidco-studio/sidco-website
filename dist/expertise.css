@@ -1,0 +1,170 @@
+/* Keep the introduction and service choices beside their examples on laptops. */
+.expertise { overflow-x: clip; }
+@media (min-width: 1001px) {
+  .expertise.section-wrap {
+    display: grid;
+    grid-template-columns: minmax(0, .86fr) minmax(0, 1.14fr);
+    column-gap: clamp(38px, 4.5vw, 72px);
+    row-gap: 24px;
+    align-items: start;
+    padding-block: clamp(32px, 4.6svh, 44px);
+  }
+
+  .expertise > .section-heading {
+    display: block;
+    grid-column: 1;
+    grid-row: 1;
+    min-width: 0;
+  }
+
+  .expertise .section-heading > .eyebrow {
+    margin-bottom: 14px;
+  }
+
+  .expertise .section-heading h2 {
+    max-width: 510px;
+    font-size: clamp(34px, 3vw, 42px);
+    line-height: 1.12;
+    letter-spacing: -.055em;
+  }
+
+  .expertise .desktop-break {
+    display: none;
+  }
+
+  .expertise .section-heading > p:last-child {
+    max-width: 440px;
+    margin: 17px 0 0;
+    padding: 0;
+    font-size: 14px;
+    line-height: 1.75;
+  }
+
+  /* The existing DOM and reading order stay intact; only the grid is shared. */
+  .expertise > .expertise-layout {
+    display: contents;
+  }
+
+  .expertise .service-tabs {
+    grid-column: 1;
+    grid-row: 2;
+    min-width: 0;
+    padding: 0;
+    align-self: start;
+  }
+
+  .expertise .service-tab {
+    min-height: 82px;
+    padding: 17px 0;
+    gap: 16px;
+    align-items: center;
+  }
+
+  .expertise .tab-number {
+    min-width: 23px;
+    font-size: 10px;
+    line-height: 1.5;
+  }
+
+  .expertise .tab-copy {
+    min-width: 0;
+    gap: 5px;
+  }
+
+  .expertise .tab-copy strong {
+    font-size: clamp(21px, 1.7vw, 25px);
+    line-height: 1.25;
+    letter-spacing: -.7px;
+  }
+
+  .expertise .tab-copy > span {
+    max-width: none;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  .expertise .tab-status {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  .expertise .service-note {
+    padding: 16px 0 0 39px;
+    font-size: 11px;
+    line-height: 1.65;
+  }
+
+  .expertise .service-panels {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    min-width: 0;
+    align-self: start;
+  }
+
+  /* Natural content height remains the input for the shared panel measurement. */
+  .expertise .product-window {
+    min-height: 0;
+  }
+
+  .expertise .window-top {
+    height: 34px;
+  }
+
+  .expertise .example-body {
+    padding: 18px 24px 22px;
+  }
+
+  .expertise .example-topline {
+    min-height: 22px;
+  }
+
+  .expertise .example-heading {
+    max-width: none;
+    margin: 12px 0 18px;
+    font-size: clamp(24px, 1.9vw, 28px);
+    line-height: 1.2;
+    letter-spacing: -.7px;
+  }
+
+  .expertise .integration-node {
+    min-height: 56px;
+    padding: 9px 13px;
+    gap: 12px;
+  }
+
+  .expertise .integration-node strong,
+  .expertise .request-source strong,
+  .expertise .draft-destination strong {
+    font-size: 12px;
+  }
+
+  .expertise .integration-node small,
+  .expertise .request-source small,
+  .expertise .draft-destination small {
+    font-size: 10px;
+  }
+
+  .expertise .integration-connector {
+    height: 20px;
+  }
+
+  .expertise .integration-connector > small {
+    font-size: 9px;
+  }
+
+  .expertise .panel-caption {
+    padding-top: 17px;
+    gap: 10px;
+  }
+
+  .expertise .panel-caption p {
+    max-width: none;
+    font-size: 13px;
+    line-height: 1.75;
+  }
+
+  .expertise .panel-caption > span {
+    font-size: 9px;
+    line-height: 1.4;
+  }
+}

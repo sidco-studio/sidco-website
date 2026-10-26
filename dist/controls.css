@@ -5,7 +5,7 @@
   top: 0;
   z-index: 50;
   isolation: isolate;
-  background: linear-gradient(115deg, #111b0dbf, #090d0ab3 48%, #111a0dbf);
+  background: linear-gradient(115deg, #111b0da6, #090d0a99 48%, #111a0da6);
   border-bottom: 1px solid #adc67f2e;
   backdrop-filter: blur(28px) saturate(125%);
   -webkit-backdrop-filter: blur(28px) saturate(125%);
@@ -128,16 +128,6 @@
 .copy-email:hover { color: var(--lime); }
 .copy-email svg { width: 16px; height: 16px; }
 .service-tab { position: relative; isolation: isolate; }
-.service-tab::before {
-  content: '';
-  position: absolute;
-  inset: 0 -12px;
-  z-index: -1;
-  background: linear-gradient(90deg, #baff4008, transparent 85%);
-  opacity: 0;
-  transition: opacity .25s ease;
-}
-.service-tab:hover::before { opacity: 1; }
 .service-tab .tab-status { transition: background .2s ease, transform .25s ease; }
 .service-tab:hover .tab-status { transform: translateX(2px); }
 
@@ -149,7 +139,7 @@
   .contact-arrow { width: 85px; height: 85px; }
 }
 @media (max-width: 600px) {
-  html { scroll-padding-top: 88px; }
+  html { scroll-padding-top: var(--sticky-header-height, 64px); }
   .site-header { height: 64px; gap: 12px; }
   .site-header .wordmark { gap: 7px; font-size: 28px; }
   .site-header .brand-symbol { width: 25px; height: 27px; }
@@ -159,7 +149,6 @@
   .button .button-label { font-size: 11px; padding: 17px 14px; }
   .contact-arrow { width: 56px; height: 56px; }
   .contact-arrow .icon-chevron { width: 48%; height: 48%; }
-  .service-tab::before { inset-inline: -8px; }
 }
 @media (max-width: 440px) {
   .contact-content { display: block; position: relative; padding-bottom: 70px; }

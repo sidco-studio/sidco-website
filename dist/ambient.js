@@ -7,7 +7,15 @@
     if (!glow.isConnected) document.body.append(glow);
     return glow;
   };
-  const cursorGlow = makeGlow('cursor-glow');
+  // One reusable glow is clipped inside the current control, never the page.
+  document.querySelectorAll('body > .cursor-glow').forEach(glow => glow.remove());
+  const cursorClip = document.querySelector('.button-hover-clip') || document.createElement('i');
+  cursorClip.classList.add('button-hover-clip');
+  cursorClip.setAttribute('aria-hidden', 'true');
+  const cursorGlow = cursorClip.querySelector('.cursor-glow') || document.createElement('i');
+  cursorGlow.classList.add('cursor-glow');
+  cursorGlow.setAttribute('aria-hidden', 'true');
+  if (cursorGlow.parentElement !== cursorClip) cursorClip.append(cursorGlow);
   const scrollbarGlow = makeGlow('scrollbar-glow');
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   const finePointer = matchMedia('(any-hover: hover) and (any-pointer: fine)');
@@ -57,10 +65,18 @@
     pointerY = event.clientY;
     const control = hoveredControl(event.target);
     if (!cursorEnabled() || !control) { hideCursor(); return; }
+    const changedControl = activeControl !== control || cursorClip.parentElement !== control;
+    if (changedControl) {
+      control.classList.add('has-hover-glow');
+      control.append(cursorClip);
+    }
     activeControl = control;
-    targetX = pointerX - 210;
-    targetY = pointerY - 210;
-    if (!hasPosition) {
+    const bounds = control.getBoundingClientRect();
+    targetX = pointerX - bounds.left - control.clientLeft - 210;
+    targetY = pointerY - bounds.top - control.clientTop - 210;
+    if (!hasPosition || changedControl) {
+      if (cursorFrame) cancelAnimationFrame(cursorFrame);
+      cursorFrame = 0;
       x = targetX; y = targetY;
       hasPosition = true;
       positionCursor();
@@ -101,6 +117,11 @@
     const thumbHeight = Math.min(viewport, Math.max(32, viewport * viewport / scrollHeight));
     const progress = Math.max(0, Math.min(1, root.scrollTop / overflow));
     const top = progress * (viewport - thumbHeight);
+    const gutter = Math.max(0, window.innerWidth - document.documentElement.clientWidth);
+    const thumbWidth = gutter || 6;
+    const centerX = window.innerWidth - thumbWidth / 2;
+    const glowWidth = scrollbarGlow.offsetWidth;
+    scrollbarGlow.style.left = `${centerX - glowWidth / 2}px`;
     scrollbarGlow.style.height = `${thumbHeight.toFixed(2)}px`;
     scrollbarGlow.style.transform = `translate3d(0, ${top.toFixed(2)}px, 0)`;
   }
