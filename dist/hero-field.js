@@ -63,7 +63,7 @@
     const textTop=heading.top-box.top,textBottom=Math.max(heading.bottom,description.bottom)-box.top;
     const cx=copy.left-box.left+copy.width*0.5;
     const cy=textTop+(textBottom-textTop)*0.54;
-    const span=Math.max(230,Math.min(width,Math.max(copy.width*1.1,(textBottom-textTop)*1.6)));
+    const span=Math.max(230,Math.min(width,Math.max(copy.width*1.1,(textBottom-textTop)*1.6)))*(width>600?0.94:1);
     traces=[];
     // Five complete routes link the four chevron turns, with no disconnected rays.
     for(let n=0;n<5;n++){
