@@ -45,6 +45,7 @@ html.scrollbar-visible{--scrollbar-thumb-color:var(--lime);--scrollbar-thumb-hov
 .menu-toggle{position:relative;isolation:isolate}
 .button-hover-clip{position:absolute;inset:0;border-radius:inherit;overflow:hidden;pointer-events:none;z-index:-1}
 .service-tab>.button-hover-clip{overflow:visible;clip-path:inset(0 -210px);border-radius:0}
+.contact-arrow>.button-hover-clip{overflow:visible;clip-path:none;border-radius:0}
 .cursor-glow{position:absolute;top:0;left:0;width:420px;height:420px;pointer-events:none;opacity:0;background:radial-gradient(circle,#c7ff4726 0%,#c7ff4712 35%,transparent 69%);mix-blend-mode:screen;transform:translate3d(-1000px,-1000px,0);will-change:transform;transition:opacity .25s ease}
 .cursor-glow.is-active{opacity:1}
 .scrollbar-glow{position:fixed;top:0;left:0;right:auto;width:12px;min-height:32px;border-radius:999px;pointer-events:none;z-index:65;opacity:0;background:radial-gradient(ellipse,#c7ff4760 0%,#c7ff4733 42%,transparent 76%);filter:blur(3px);mix-blend-mode:screen;transition:opacity .4s ease;will-change:transform}
