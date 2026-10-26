@@ -1,4 +1,9 @@
 /* A single mobile reading axis: promise, explanation, living mark, action. */
+.hero {
+  min-height: calc(100vh - var(--sticky-header-height, 72px));
+  min-height: calc(100svh - var(--sticky-header-height, 72px));
+}
+
 .hero-description-mobile,
 .button.button-lime.hero-mobile-action { display: none; }
 
@@ -7,8 +12,10 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     gap: 0;
-    min-height: 0;
+    min-height: calc(100vh - var(--sticky-header-height, 64px));
+    min-height: calc(100svh - var(--sticky-header-height, 64px));
     padding: 40px 24px 34px;
     text-align: center;
     background: radial-gradient(ellipse at 50% 56%, #a6e83a16, transparent 62%), #090c0a;
