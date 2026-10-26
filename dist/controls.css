@@ -143,9 +143,8 @@
   .site-header { height: 64px; gap: 12px; }
   .site-header .wordmark { gap: 7px; font-size: 28px; }
   .site-header .brand-symbol { width: 25px; height: 27px; }
-  .header-contact { min-width: 84px; min-height: 44px; gap: 8px; padding: 10px 11px; font-size: 10.5px; }
-  .header-contact .icon-chevron { width: 12px; height: 12px; }
-  .menu-toggle { height: 44px; min-width: 30px; align-items: center; }
+  .site-header > .header-contact { display: none; }
+  .menu-toggle { height: 44px; min-width: 30px; margin-left: auto; align-items: center; }
   .button .button-label { font-size: 11px; padding: 17px 14px; }
   .contact-arrow { width: 56px; height: 56px; }
   .contact-arrow .icon-chevron { width: 48%; height: 48%; }
