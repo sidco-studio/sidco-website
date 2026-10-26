@@ -11,6 +11,9 @@
   const scrollbarGlow = makeGlow('scrollbar-glow');
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   const finePointer = matchMedia('(any-hover: hover) and (any-pointer: fine)');
+  const controlSelector = 'button, .button, .header-contact, .contact-arrow, .text-link';
+  let activeControl = null;
+  let pointerX = 0, pointerY = 0;
   let cursorFrame = 0;
   let scrollFrame = 0;
   let scrollbarVisible = false;
@@ -26,10 +29,18 @@
     if (cursorFrame) cancelAnimationFrame(cursorFrame);
     cursorFrame = 0;
     hasPosition = false;
+    activeControl = null;
+  }
+  function hoveredControl(target) {
+    const control = target instanceof Element ? target.closest(controlSelector) : null;
+    return control && !control.matches(':disabled, [aria-disabled="true"]') && !control.closest('[inert]') ? control : null;
+  }
+  function validateCursor() {
+    if (activeControl && (!cursorEnabled() || hoveredControl(document.elementFromPoint(pointerX, pointerY)) !== activeControl)) hideCursor();
   }
   function followCursor() {
     cursorFrame = 0;
-    if (!cursorEnabled()) { hideCursor(); return; }
+    if (!cursorEnabled() || !activeControl) { hideCursor(); return; }
     const dx = targetX - x, dy = targetY - y;
     if (Math.abs(dx) < 0.2 && Math.abs(dy) < 0.2) {
       x = targetX; y = targetY;
@@ -41,9 +52,14 @@
     cursorFrame = requestAnimationFrame(followCursor);
   }
   function onPointerMove(event) {
-    if ((event.pointerType !== 'mouse' && event.pointerType !== 'pen') || !cursorEnabled()) return;
-    targetX = event.clientX - 210;
-    targetY = event.clientY - 210;
+    if (event.pointerType !== 'mouse' && event.pointerType !== 'pen') { hideCursor(); return; }
+    pointerX = event.clientX;
+    pointerY = event.clientY;
+    const control = hoveredControl(event.target);
+    if (!cursorEnabled() || !control) { hideCursor(); return; }
+    activeControl = control;
+    targetX = pointerX - 210;
+    targetY = pointerY - 210;
     if (!hasPosition) {
       x = targetX; y = targetY;
       hasPosition = true;
@@ -92,15 +108,19 @@
     if (!scrollFrame && !document.hidden) scrollFrame = requestAnimationFrame(updateScrollbar);
   }
   document.addEventListener('pointermove', onPointerMove, { passive: true });
+  document.addEventListener('pointerover', onPointerMove, { passive: true });
   document.addEventListener('pointermove', event => {
     if (event.clientX >= window.innerWidth - 24 && event.clientX <= window.innerWidth &&
         event.clientY >= 0 && event.clientY <= window.innerHeight) showScrollbar();
   }, { passive: true });
   document.documentElement.addEventListener('pointerleave', hideCursor, { passive: true });
   document.addEventListener('pointerout', event => {
-    if (!event.relatedTarget) hideCursor();
+    if (!event.relatedTarget || (activeControl && hoveredControl(event.relatedTarget) !== activeControl)) hideCursor();
   }, { passive: true });
   window.addEventListener('blur', hideCursor);
+  // A stationary pointer must not leave a glow behind when a control scrolls away.
+  window.addEventListener('scroll', validateCursor, { passive: true, capture: true });
+  window.addEventListener('resize', validateCursor, { passive: true });
   window.addEventListener('scroll', showScrollbar, { passive: true });
   window.addEventListener('resize', showScrollbar, { passive: true });
   window.addEventListener('load', showScrollbar, { once: true });

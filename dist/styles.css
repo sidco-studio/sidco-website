@@ -40,7 +40,7 @@ html.scrollbar-visible{--scrollbar-thumb-color:var(--lime);--scrollbar-thumb-hov
 ::-webkit-scrollbar-thumb:hover,::-webkit-scrollbar-thumb:active{background:var(--scrollbar-thumb-hover)}
 @supports selector(::-webkit-scrollbar){html,html.scrollbar-visible{scrollbar-width:auto;scrollbar-color:auto}}
 
-/* Decorative light never captures input or replaces the system cursor. */
+/* Button hover light never captures input or replaces the system cursor. */
 .cursor-glow{position:fixed;top:0;left:0;width:420px;height:420px;pointer-events:none;z-index:60;opacity:0;background:radial-gradient(circle,#c7ff471a 0%,#c7ff470b 35%,transparent 69%);mix-blend-mode:screen;transform:translate3d(-1000px,-1000px,0);will-change:transform;transition:opacity .25s ease}
 .cursor-glow.is-active{opacity:1}
 .scrollbar-glow{position:fixed;top:0;right:-4px;width:22px;min-height:32px;border-radius:999px;pointer-events:none;z-index:65;opacity:0;background:radial-gradient(ellipse,#c7ff4760 0%,#c7ff4733 42%,transparent 76%);filter:blur(7px);mix-blend-mode:screen;transition:opacity .4s ease;will-change:transform}
