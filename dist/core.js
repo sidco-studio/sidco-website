@@ -13,7 +13,8 @@
   }
 
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
-  const columns = 49;
+  const smallViewport = matchMedia('(max-width: 600px)');
+  let mobile = false, columns = 49;
   const facets = [
     [[20,1],[28,13],[20,10],[12,13]],
     [[39,20],[27,28],[30,20],[27,12]],
@@ -36,6 +37,7 @@
   const baseCtx = base.getContext('2d');
   let width=1, height=1, dpr=1, step=10, fieldSize=480, left=0, top=0;
   let points=[], glyphPoints=[], pulses=[], visible=true, raf=0, last=0, time=0;
+  let nextAutoPulse=0, touchGesture=null, suppressClickUntil=0;
   const pointer={active:false,x:-1000,y:-1000,easedX:-1000,easedY:-1000};
 
   function inside(x,y,polygon) {
@@ -97,6 +99,10 @@
   function resize(){
     const box=canvas.getBoundingClientRect();
     width=Math.max(1,box.width);height=Math.max(1,box.height);
+    mobile=smallViewport.matches;
+    columns=mobile?37:49;
+    nextAutoPulse=time+0.6;
+    touchGesture=null;
     dpr=Math.min(window.devicePixelRatio||1,1.6);
     canvas.width=Math.round(width*dpr);canvas.height=Math.round(height*dpr);
     step=Math.min(width*0.84,height*0.84)/(columns-1);
@@ -113,10 +119,12 @@
     glyphPoints=points.filter(p=>p.facet>=0);
     drawBase();last=0;requestDraw();
   }
-  function pulse(x,y){
-    pulses.push({x,y,start:performance.now()});
+  function pulse(x,y,{auto=false,schedule=true,start=performance.now()}={}){
+    pulses.push({x,y,start,auto,quiet:reduced.matches,
+      strength:auto?0.44:(mobile?1.55:1),duration:reduced.matches?360:1900});
     if(pulses.length>5)pulses.shift();
-    requestDraw();
+    if(mobile&&!auto)nextAutoPulse=time+4.8;
+    if(schedule)requestDraw();
   }
   function chevron(x,y,length,angle,alpha,color=lime){
     ctx.globalAlpha=Math.max(0,Math.min(1,alpha));ctx.strokeStyle=color;
@@ -133,6 +141,10 @@
     raf=0;if(!visible||document.hidden)return;
     const dt=last?Math.min((now-last)/1000,0.06):0;last=now;
     if(!reduced.matches)time+=dt;
+    if(mobile&&!reduced.matches&&time>=nextAutoPulse){
+      pulse(width/2,height/2,{auto:true,schedule:false,start:now});
+      nextAutoPulse=time+4.8;
+    }
     if(reduced.matches){pointer.easedX=pointer.x;pointer.easedY=pointer.y;}
     else{
       // Exponential following keeps the same feel at 60, 90 and 120 Hz.
@@ -140,32 +152,38 @@
       pointer.easedX+=(pointer.x-pointer.easedX)*follow;
       pointer.easedY+=(pointer.y-pointer.easedY)*follow;
     }
-    pulses=pulses.filter(p=>now-p.start<1900);
+    pulses=pulses.filter(p=>now-p.start<p.duration);
     ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,width,height);
     ctx.globalAlpha=1;ctx.drawImage(base,0,0,width,height);
     const radius=step*7.3;
     const scan=(time*0.13)%1.8-0.4;
+    const breathing=mobile&&!reduced.matches?1+Math.sin(time*Math.PI*2/4.8)*0.018:1;
     // The static grid is cached; only interaction needs the surrounding points.
     const activePoints=pointer.active||pulses.length?points:glyphPoints;
     for(const p of activePoints){
-      const dx=p.x-pointer.easedX,dy=p.y-pointer.easedY;
+      const glyph=p.facet>=0;
+      const px=glyph?width/2+(p.x-width/2)*breathing:p.x;
+      const py=glyph?height/2+(p.y-height/2)*breathing:p.y;
+      const dx=px-pointer.easedX,dy=py-pointer.easedY;
       const distance=Math.max(Math.abs(dx),Math.abs(dy));
       const influence=pointer.active?Math.pow(Math.max(0,1-distance/radius),1.7):0;
       let wave=0,strongestWave=0,waveAngle=0;
       for(const q of pulses){
         const age=now-q.start;
         const reach=age*fieldSize/1450;
-        const dist=Math.max(Math.abs(p.x-q.x),Math.abs(p.y-q.y));
-        const strength=Math.max(0,1-Math.abs(dist-reach)/(step*2.1))*Math.max(0,1-age/1900);
-        wave+=strength;
-        if(strength>strongestWave){strongestWave=strength;waveAngle=Math.atan2(p.y-q.y,p.x-q.x);}
+        const dist=Math.max(Math.abs(px-q.x),Math.abs(py-q.y));
+        const strength=q.quiet
+          ?Math.max(0,1-dist/(fieldSize*0.75))*Math.max(0,1-age/q.duration)*q.strength
+          :Math.max(0,1-Math.abs(dist-reach)/(step*(mobile?2.8:2.1)))*Math.max(0,1-age/q.duration)*q.strength;
+        const tapFlash=mobile&&glyph&&!q.auto&&!q.quiet&&age<160?Math.max(0,1-age/160)*0.18:0;
+        wave+=strength+tapFlash;
+        if(strength>strongestWave){strongestWave=strength;waveAngle=Math.atan2(py-q.y,px-q.x);}
       }
       const scanLight=reduced.matches?0:Math.max(0,1-Math.abs(p.nx+p.ny*0.22-scan)/0.12);
-      const glyph=p.facet>=0;
       if(!glyph&&influence<0.015&&wave<0.015&&scanLight<0.8)continue;
       const dist=influence>0?Math.max(1,Math.hypot(dx,dy)):1;
       const displacement=reduced.matches?0:influence*influence*step*1.7;
-      const x=p.x+dx/dist*displacement,y=p.y+dy/dist*displacement;
+      const x=px+dx/dist*displacement,y=py+dy/dist*displacement;
       const brightness=glyph?0.77+p.variation*0.15+scanLight*0.23:0;
       const alpha=Math.min(1,brightness+influence*0.9+wave*1.05+(!glyph?scanLight*0.065:0));
       const color=influence>0.38?lime:(p.accent?paleLime:p.color);
@@ -174,22 +192,26 @@
         // Sparse open facets follow the pointer; most pixels retain their shape.
         const direction=Math.round(Math.atan2(dy,dx)/(Math.PI/4))*(Math.PI/4);
         chevron(x,y,step*(0.57+influence*0.34),direction,alpha,color);
+      }else if(mobile&&!reduced.matches&&wave>0.32&&sparseChevron){
+        const direction=Math.round(waveAngle/(Math.PI/4))*(Math.PI/4);
+        chevron(x,y,step*0.78,direction,alpha,color);
       }else if(glyph){
         ctx.globalAlpha=alpha;ctx.fillStyle=color;
         const horizontal=p.facet===0||p.facet===2;
-        const long=step*(0.57+wave*0.13),short=step*0.37;
+        const long=step*((mobile?0.67:0.57)+(reduced.matches?0:wave*0.13));
+        const short=step*(mobile?0.46:0.37);
         const w=horizontal?long:short,h=horizontal?short:long;
         ctx.fillRect(x-w/2,y-h/2,w,h);
-        if(wave>0.28){
-          ctx.globalAlpha=wave*0.4;
+        if(wave>0.28&&!reduced.matches){
+          ctx.globalAlpha=Math.min(1,wave*0.4);
           ctx.fillRect(x-long*.68,y-long*.68,long*1.36,long*1.36);
         }
       }else if(wave>0.04||influence>0.015){
-        if(wave>0.3&&sparseChevron){
+        if(wave>0.3&&sparseChevron&&!reduced.matches){
           const direction=Math.round(waveAngle/(Math.PI/4))*(Math.PI/4);
           chevron(x,y,step*0.5,direction,alpha*0.7,color);
         }else{
-          const size=step*(0.22+influence*0.18+wave*0.1);
+          const size=step*(0.22+influence*0.18+(reduced.matches?0:wave*0.1));
           ctx.globalAlpha=alpha*0.7;ctx.fillStyle=color;
           ctx.fillRect(x-size/2,y-size/2,size,size);
         }
@@ -197,13 +219,14 @@
     }
     // A tap sends a square wave through the grid. The shape stays resolutely flat.
     for(const p of pulses){
+      if(p.quiet)continue;
       const age=now-p.start,reach=age*fieldSize/1450;
-      ctx.globalAlpha=Math.max(0,1-age/1500)*0.26;
+      ctx.globalAlpha=Math.min(1,Math.max(0,1-age/1500)*0.26*p.strength);
       ctx.strokeStyle=lime;ctx.lineWidth=1;
       ctx.strokeRect(p.x-reach,p.y-reach,reach*2,reach*2);
       if(age<450){
         const small=step*(0.8+age/450);
-        ctx.globalAlpha=(1-age/450)*0.8;
+        ctx.globalAlpha=Math.min(1,(1-age/450)*0.8*p.strength);
         ctx.strokeRect(p.x-small,p.y-small,small*2,small*2);
       }
     }
@@ -218,17 +241,46 @@
     if(!reduced.matches||pulses.length)raf=requestAnimationFrame(draw);
   }
   function setPointer(event){
-    if(event.pointerType==='touch')return;
+    if(event.pointerType==='touch'){
+      if(touchGesture&&touchGesture.pointerId===event.pointerId&&
+        Math.hypot(event.clientX-touchGesture.x,event.clientY-touchGesture.y)>10)touchGesture.moved=true;
+      return;
+    }
     const box=canvas.getBoundingClientRect();
     const x=event.clientX-box.left,y=event.clientY-box.top;
     if(!pointer.active){pointer.easedX=x;pointer.easedY=y;}
     pointer.active=true;pointer.x=x;pointer.y=y;requestDraw();
   }
+  canvas.addEventListener('pointerdown',event=>{
+    if(event.pointerType!=='touch')return;
+    suppressClickUntil=performance.now()+900;
+    if(!event.isPrimary){touchGesture=null;return;}
+    touchGesture={pointerId:event.pointerId,x:event.clientX,y:event.clientY,start:performance.now(),moved:false};
+  },{passive:true});
+  canvas.addEventListener('pointerup',event=>{
+    if(event.pointerType!=='touch')return;
+    const gesture=touchGesture;
+    touchGesture=null;
+    suppressClickUntil=performance.now()+900;
+    if(!gesture||gesture.pointerId!==event.pointerId||gesture.moved||
+      performance.now()-gesture.start>700||Math.hypot(event.clientX-gesture.x,event.clientY-gesture.y)>10)return;
+    const box=canvas.getBoundingClientRect();
+    pulse(event.clientX-box.left,event.clientY-box.top);
+  },{passive:true});
   canvas.addEventListener('pointermove',setPointer,{passive:true});
   canvas.addEventListener('pointerenter',setPointer,{passive:true});
-  canvas.addEventListener('pointerleave',()=>{pointer.active=false;requestDraw();},{passive:true});
-  canvas.addEventListener('pointercancel',()=>{pointer.active=false;requestDraw();},{passive:true});
+  canvas.addEventListener('pointerleave',event=>{
+    pointer.active=false;
+    if(event.pointerType==='touch')touchGesture=null;
+    requestDraw();
+  },{passive:true});
+  canvas.addEventListener('pointercancel',event=>{
+    pointer.active=false;touchGesture=null;
+    if(event.pointerType==='touch')suppressClickUntil=performance.now()+900;
+    requestDraw();
+  },{passive:true});
   canvas.addEventListener('click',event=>{
+    if(performance.now()<suppressClickUntil)return;
     const box=canvas.getBoundingClientRect();
     pulse(event.clientX-box.left,event.clientY-box.top);
   });
@@ -237,19 +289,23 @@
       event.preventDefault();if(!event.repeat)pulse(width/2,height/2);
     }
   });
-  canvas.style.touchAction='pan-y';
+  canvas.style.touchAction='pan-y pinch-zoom';
   new ResizeObserver(resize).observe(canvas);
   new IntersectionObserver(entries=>{
     visible=entries[0].isIntersecting;
     if(visible){last=0;requestDraw();}
-    else if(raf){cancelAnimationFrame(raf);raf=0;}
+    else{
+      touchGesture=null;
+      if(raf){cancelAnimationFrame(raf);raf=0;}
+    }
   },{rootMargin:'40px'}).observe(canvas);
   document.addEventListener('visibilitychange',()=>{
-    if(document.hidden){cancelAnimationFrame(raf);raf=0;}
+    if(document.hidden){touchGesture=null;cancelAnimationFrame(raf);raf=0;}
     else{last=0;requestDraw();}
   });
   reduced.addEventListener('change',()=>{
-    cancelAnimationFrame(raf);raf=0;last=0;time=0;requestDraw();
+    cancelAnimationFrame(raf);raf=0;last=0;time=0;pulses=[];nextAutoPulse=0.6;requestDraw();
   });
+  smallViewport.addEventListener('change',resize);
   resize();requestDraw();
 })();
