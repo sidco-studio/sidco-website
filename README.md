@@ -22,7 +22,7 @@ npm run check
 
 - `dist/index.html`: complete Dutch Belgian site, including expertise, approach, founder and email contact.
 - `dist/styles.css`: responsive layouts, local typography, focus styles and reduced-motion support.
-- `dist/controls.css`: controls with the same fine green-grey borders as the preview windows, a borderless glowing contact chevron, section chevrons, visible keyboard focus and compact sticky navigation with a dark translucent neon wash.
+- `dist/controls.css`: pill-shaped controls with the same fine green-grey borders as the preview windows, a borderless glowing contact chevron, section chevrons, visible keyboard focus and compact sticky navigation with a dark translucent neon wash.
 - `dist/examples.css`: a company portal and concrete Teamleader, Odoo, Teams and Outlook workflows, with recognizable SVG marks adapted to the lime palette.
 - `dist/expertise.css`: compact desktop composition, with introduction and service choices beside the shared preview, fitting a normal laptop viewport.
 - `dist/app.js`: mobile navigation, keyboard-accessible service tabs with separately measured, shared window and caption heights, a cancellable crossfade between scenarios, a compact mobile tab row, gentle proximity snapping for sections that fit below the navigation, and email copying. The expertise strip loops seamlessly with the abstract brand symbol, pauses on hover or keyboard focus, and stays static for reduced-motion preferences.

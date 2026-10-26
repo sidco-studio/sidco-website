@@ -39,7 +39,7 @@
   position: relative;
   isolation: isolate;
   border: 1px solid #394630;
-  border-radius: 6px;
+  border-radius: 999px;
   background: linear-gradient(130deg, #1b2319, #10170f);
   box-shadow: inset 0 1px 0 #d4ff7b08;
   filter: none;
@@ -108,7 +108,7 @@
   min-width: 112px;
   gap: 12px;
   padding: 11px 20px;
-  border-radius: 5px;
+  border-radius: 999px;
 }
 .header-contact .icon-chevron { width: 14px; height: 14px; color: var(--lime); transition: transform .25s ease; }
 .header-contact:hover .icon-chevron { transform: translateX(2px); }
@@ -124,7 +124,7 @@
 .contact-arrow:hover::after { transform: scale(1.17); }
 .contact-arrow:hover .icon-chevron { transform: rotate(-45deg) translateX(2px); }
 .text-link { min-height: 44px; padding: 12px 17px; color: #d8e9c6; }
-.copy-email { width: 44px; height: 44px; color: #bcd49e; border-radius: 5px; }
+.copy-email { width: 44px; height: 44px; color: #bcd49e; border-radius: 999px; }
 .copy-email:hover { color: var(--lime); }
 .copy-email svg { width: 16px; height: 16px; }
 .service-tab { position: relative; isolation: isolate; }
