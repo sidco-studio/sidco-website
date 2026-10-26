@@ -5,11 +5,11 @@
   top: 0;
   z-index: 50;
   isolation: isolate;
-  background: linear-gradient(115deg, #131a16a6, #0d130f99 48%, #151c17a6);
-  border-bottom: 1px solid #adc67f1f;
+  background: linear-gradient(115deg, #111b0da6, #090d0a99 48%, #111a0da6);
+  border-bottom: 1px solid #adc67f2e;
   backdrop-filter: blur(28px) saturate(125%);
   -webkit-backdrop-filter: blur(28px) saturate(125%);
-  box-shadow: 0 12px 38px #00000033;
+  box-shadow: 0 12px 38px #00000042;
 }
 .site-header::before {
   content: '';
@@ -17,7 +17,7 @@
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  background: radial-gradient(ellipse at 15% -50%, #c7ff4710, transparent 65%), radial-gradient(ellipse at 88% 120%, #c7ff4708, transparent 45%);
+  background: radial-gradient(ellipse at 15% -50%, #c7ff4724, transparent 65%), radial-gradient(ellipse at 88% 120%, #c7ff470d, transparent 45%);
 }
 .site-header .wordmark { font-size: 32px; gap: 9px; }
 .site-header .brand-symbol { width: 28px; height: 30px; }

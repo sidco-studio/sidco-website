@@ -31,14 +31,21 @@
 
 .wordmark-i{position:relative;display:inline-block}.logo-tittle{position:absolute;top:.075em;left:50%;width:.23em;height:.2em;transform:translateX(-42%);fill:var(--lime);pointer-events:none}
 
-/* Native scrolling stays native; activity reveals the slim neon thumb. */
-html{--scrollbar-thumb-color:transparent;--scrollbar-thumb-hover:transparent;scrollbar-width:thin;scrollbar-color:var(--scrollbar-thumb-color) transparent;transition:scrollbar-color .4s ease}
-html.scrollbar-visible{--scrollbar-thumb-color:var(--lime);--scrollbar-thumb-hover:#ddff94}
-::-webkit-scrollbar{width:6px;height:6px;background:transparent}
+/* A muted overlay thumb leaves the page full-width; native scrolling is preserved. */
+html{scrollbar-width:thin;scrollbar-color:#9cb77e transparent}
+::-webkit-scrollbar{width:4px;height:4px;background:transparent}
 ::-webkit-scrollbar-track,::-webkit-scrollbar-corner{background:transparent}
-::-webkit-scrollbar-thumb{background:var(--scrollbar-thumb-color);border:0;border-radius:999px;min-height:32px;transition:background-color .4s ease}
-::-webkit-scrollbar-thumb:hover,::-webkit-scrollbar-thumb:active{background:var(--scrollbar-thumb-hover)}
-@supports selector(::-webkit-scrollbar){html,html.scrollbar-visible{scrollbar-width:auto;scrollbar-color:auto}}
+::-webkit-scrollbar-thumb{background:#9cb77e;border:0;border-radius:999px;min-height:32px}
+html.has-overlay-scrollbar{scrollbar-width:none}
+html.has-overlay-scrollbar::-webkit-scrollbar{display:none;width:0;height:0}
+html.is-scrollbar-dragging{scroll-snap-type:none;scroll-behavior:auto;user-select:none}
+.scrollbar-rail{position:fixed;top:0;right:0;width:12px;height:100dvh;z-index:70;pointer-events:none;background:transparent}
+.scrollbar-rail.is-active{pointer-events:auto}
+.scrollbar-thumb{position:absolute;top:0;right:0;width:12px;min-height:32px;border-radius:999px;opacity:0;pointer-events:none;touch-action:none;transition:opacity .4s ease;will-change:transform;cursor:grab}
+.scrollbar-thumb::before{content:'';position:absolute;inset:0 2px 0 auto;width:4px;border-radius:999px;background:#9cb77e}
+.scrollbar-thumb.is-active{opacity:1;pointer-events:auto}
+.scrollbar-thumb.is-dragging{cursor:grabbing}
+.scrollbar-thumb:focus-visible{outline:1px solid #c7ff47;outline-offset:-1px}
 
 /* A local clipping layer keeps pointer light inside the control's border. */
 .has-hover-glow{isolation:isolate}
@@ -51,7 +58,7 @@ html.scrollbar-visible{--scrollbar-thumb-color:var(--lime);--scrollbar-thumb-hov
 .scrollbar-glow{position:fixed;top:0;left:0;right:auto;width:12px;min-height:32px;border-radius:999px;pointer-events:none;z-index:65;opacity:0;background:radial-gradient(ellipse,#c7ff4760 0%,#c7ff4733 42%,transparent 76%);filter:blur(3px);mix-blend-mode:screen;transition:opacity .4s ease;will-change:transform}
 .scrollbar-glow.is-active{opacity:.7}
 @media(max-width:600px){.scrollbar-glow{display:none}}
-@media(prefers-reduced-motion:reduce){.cursor-glow{display:none}.scrollbar-glow{transition:none}}
+@media(prefers-reduced-motion:reduce){.cursor-glow{display:none}.scrollbar-glow,.scrollbar-thumb{transition:none}}
 
 /* Nearby sections settle gently in the space below the fixed navigation. */
 html{scroll-snap-type:y proximity;scroll-padding-top:var(--sticky-header-height,72px);scroll-padding-bottom:0}
