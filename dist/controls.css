@@ -20,8 +20,19 @@
   background: radial-gradient(ellipse at 15% -50%, #c7ff4724, transparent 65%), radial-gradient(ellipse at 88% 120%, #c7ff470d, transparent 45%);
 }
 .site-header .wordmark { font-size: 32px; gap: 9px; }
-.site-header .brand-symbol { width: 28px; height: 30px; }
-.desktop-nav { color: #d8e2d0; font-size: 12px; }
+/* Centre the visible lowercase letters against the symbol, beyond the font's line box. */
+.site-header .wordmark > span { position: relative; top: -.06em; }
+.site-header .brand-symbol { width: 36px; height: 38px; }
+.desktop-nav { color: #d8e2d0; font-size: 14px; margin: 0; padding: 0; }
+@media (min-width: 601px) {
+  .site-header { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); column-gap: clamp(16px, 2.5vw, 36px); }
+  .site-header > .wordmark { justify-self: start; }
+  .desktop-nav { justify-self: center; }
+  .site-header > .header-contact { justify-self: end; }
+}
+@media (min-width: 601px) and (max-width: 800px) {
+  .desktop-nav { font-size: 13px; }
+}
 .mobile-nav {
   top: calc(100% - 1px);
   background: linear-gradient(120deg, #14200ffb, #0b120afb);
@@ -142,7 +153,7 @@
   html { scroll-padding-top: var(--sticky-header-height, 64px); }
   .site-header { height: 64px; gap: 12px; }
   .site-header .wordmark { gap: 7px; font-size: 28px; }
-  .site-header .brand-symbol { width: 25px; height: 27px; }
+  .site-header .brand-symbol { width: 32px; height: 34px; }
   .site-header > .header-contact { display: none; }
   .menu-toggle { height: 44px; min-width: 30px; margin-left: auto; align-items: center; }
   .button .button-label { font-size: 11px; padding: 11px 12px; }
