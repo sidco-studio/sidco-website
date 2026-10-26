@@ -7,6 +7,6 @@
   "scripts": {
     "dev": "node scripts/serve.mjs",
     "start": "node scripts/serve.mjs",
-    "check": "node --check dist/app.js && node --check dist/core.js && node --check dist/ambient.js && node --check scripts/serve.mjs"
+    "check": "node --check dist/app.js && node --check dist/core.js && node --check dist/hero-field.js && node --check dist/ambient.js && node --check scripts/serve.mjs"
   }
 }
