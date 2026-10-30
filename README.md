@@ -2,7 +2,9 @@
 
 A website for SIDCO, an AI software studio, built around a futuristic neon identity: graphite backgrounds, electric lime with selective neon glow, an original interactive 2D brand visual, and a concise Dutch presentation led by practical AI, supported by automation and custom software.
 
-Private GitHub repository: https://github.com/gilleskindt/sidco-future
+GitHub repository: https://github.com/sidco-studio/sidco-website
+
+Live website: https://sidco-studio.github.io/sidco-website/
 
 ## Local preview
 
@@ -17,6 +19,10 @@ Open http://127.0.0.1:4190. Set `PORT` to use another loopback port.
 ```sh
 npm run check
 ```
+
+## GitHub Pages
+
+`.github/workflows/pages.yml` publishes only `dist/` when website files change on `main`, or when run manually from Actions. In repository Settings → Pages, the source is **GitHub Actions**. No install or build step is needed. Relative asset paths support the `/sidco-website/` prefix and local preview.
 
 ## Structure
 
